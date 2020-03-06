@@ -1,10 +1,10 @@
 package communication;
 
-import java.io.*;
 import javax.net.ssl.*;
-import java.security.cert.X509Certificate;
-import java.security.KeyStore;
+import java.io.*;
 import java.math.BigInteger;
+import java.security.KeyStore;
+import java.security.cert.X509Certificate;
 
 public class MyClient {
   private String host;

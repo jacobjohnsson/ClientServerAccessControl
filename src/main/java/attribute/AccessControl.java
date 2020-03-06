@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class AccessControl {
+public abstract class AccessControl {
   
   public static AccessControl fetch(String objectID) {
     Scanner scanner = null;

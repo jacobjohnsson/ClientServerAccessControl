@@ -2,8 +2,8 @@ package communication;
 
 import attribute.AccessControl;
 import attribute.NoAccessControl;
-import attribute.ObjectControl;
 import attribute.Subject;
+import database.Database;
 
 public abstract class Request {
   private Subject subject;
@@ -15,6 +15,8 @@ public abstract class Request {
     this.object = object;
     this.description = description;
   }
+  
+  public abstract void execute(Database db);
   
   @Override
   public String toString() {

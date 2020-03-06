@@ -1,21 +1,19 @@
 package communication;
 
-import attribute.ObjectControl;
+import database.Database;
 
-import java.net.*;
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.*;
-import java.io.*;
 import javax.security.cert.X509Certificate;
-import java.security.KeyStore;
-
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.util.logging.FileHandler;
-import java.time.LocalTime;
-
+import java.io.*;
 import java.math.BigInteger;
+import java.net.ServerSocket;
+import java.security.KeyStore;
+import java.time.LocalTime;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MyServer implements Runnable {
   private static LocalTime time;
@@ -23,6 +21,7 @@ public class MyServer implements Runnable {
   private static ServerSocket serverSocket;
   private static String type = "TLS";
   private static AtomicInteger connections = new AtomicInteger(0);
+  private static Database db;
 
   public MyServer (ServerSocket socket) {
     this.serverSocket = socket;
@@ -83,6 +82,7 @@ public class MyServer implements Runnable {
         Request request = Request.parseUserInput(clientMsg, clientID);
   
         System.out.println(request);
+        request.execute(db);
         sender.println(request);
         sender.flush();
       }

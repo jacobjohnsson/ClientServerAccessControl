@@ -1,12 +1,5 @@
 package attribute;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
-
-import java.io.FileNotFoundException;
-import java.io.File;
-
 public class ObjectControl extends AccessControl {
   private String id;
   private String name;
@@ -20,7 +13,7 @@ public class ObjectControl extends AccessControl {
     this.subjects = subjects;
     this.divisions = divisions;
   }
-
+  
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
