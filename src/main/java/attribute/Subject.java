@@ -1,46 +1,49 @@
 package attribute;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import java.io.FileNotFoundException;
-import java.io.File;
-
-public class Subject {
+public abstract class Subject {
   private String id;
   private String name;
   private String occupation;
   private String division;
-
-  public Subject (String id, String name, String occupation, String division) {
+  
+  public Subject(String id, String name, String occupation, String division) {
     this.id = id;
     this.name = name;
     this.occupation = occupation;
     this.division = division;
   }
-
+  
   @Override
   public String toString() {
     return "ID: " + id
-      + "\nName: " + name
-      + "\nOcc: " + occupation
-      + "\nDiv: " + division;
+            + "\nName: " + name
+            + "\nOcc: " + occupation
+            + "\nDiv: " + division;
   }
-
-  public static List<Subject> load(String file) throws FileNotFoundException {
-    Scanner scanner = new Scanner(new File(file));
-    List<Subject> subjects = new LinkedList<Subject>();
+  
+  public static Subject fetch(String subjectID) {
+    Scanner scanner = null;
+    try {
+      scanner = new Scanner(new File("./src/main/resources/subjects.txt"));
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+      return new NoUser();
+    }
+    
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();
       String[] attributes = line.split(", ");
-      Subject s = new Subject(attributes[0].trim(),
-                  attributes[1].trim(),
-                  attributes[2].trim(),
-                  attributes[3].trim());
-      subjects.add(s);
+      if (attributes[0].equals(subjectID)) {
+        return new User(attributes[0].trim(),
+                attributes[1].trim(),
+                attributes[2].trim(),
+                attributes[3].trim());
+      }
     }
-    return subjects;
+    return new NoUser();
   }
-
 }

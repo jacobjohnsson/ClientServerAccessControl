@@ -2,11 +2,6 @@ package main;
 
 import communication.MyClient;
 import java.util.Scanner;
-import java.util.List;
-import java.util.LinkedList;
-import attribute.Subject;
-import attribute.Object;
-
 
 public class ClientApp {
 
@@ -16,7 +11,7 @@ public class ClientApp {
     this.client = client;
   }
 
-  private void run() {
+  private void communicate() {
     Scanner scanner = new Scanner(System.in);
     System.out.print(":>");
     String msg = scanner.nextLine();
@@ -27,27 +22,11 @@ public class ClientApp {
 
     String response = client.send(msg);
     System.out.println(response);
-    run();
+    communicate();
   }
 
   public static void main(String[] args) {
     ClientApp clientApp = new ClientApp(new MyClient("localhost", 9876));
-    clientApp.run();
-    List<Subject> subjects = new LinkedList<Subject>();
-    List<Object> objects = new LinkedList<Object>();
-    try {
-      subjects = Subject.load("./src/main/resources/subjects.txt");
-      objects = Object.load("./src/main/resources/objects.txt");
-    } catch(Exception e) {
-      e.printStackTrace();
-    }
-    System.out.println("---- Subjects ----");
-    for (Subject s : subjects) {
-      System.out.println(s);
-    }
-    System.out.println("---- Objects ----");
-    for (Object o : objects) {
-      System.out.println(o);
-    }
+    clientApp.communicate();
   }
 }

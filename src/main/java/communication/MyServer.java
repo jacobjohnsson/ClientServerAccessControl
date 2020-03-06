@@ -1,5 +1,7 @@
 package communication;
 
+import attribute.ObjectControl;
+
 import java.net.*;
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.*;
@@ -61,9 +63,10 @@ public class MyServer implements Runnable {
 
   public void run() {
     SSLSocket socket = acceptConnection();        // Blocking
+    
     SSLSession session = socket.getSession();
     X509Certificate cert = verifyCertificateChain(session);
-    String userID = cert.getSubjectDN().getName();
+    String clientID = cert.getSubjectDN().getName();
     connections.getAndIncrement();
     printCert(cert);
     LOGGER.log( Level.INFO, "Connection accepted", time.now() );
@@ -73,11 +76,14 @@ public class MyServer implements Runnable {
       BufferedReader receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       String clientMsg = null;
 
-      sender.println("Please enter name of patient.");
+      //sender.println("Please enter name of patient.");
 
       while ((clientMsg = receiver.readLine()) != null) {
-        System.out.println(clientMsg);
-        sender.println(clientMsg);
+        System.out.println("Received <" + clientMsg + ">");
+        Request request = Request.parseUserInput(clientMsg, clientID);
+  
+        System.out.println(request);
+        sender.println(request);
         sender.flush();
       }
       sender.close();
@@ -92,6 +98,7 @@ public class MyServer implements Runnable {
       System.out.println("Number of connections: " + nbr);
     }
   }
+
 
   private X509Certificate verifyCertificateChain(SSLSession session) {
     X509Certificate cert = null;
@@ -142,8 +149,7 @@ public class MyServer implements Runnable {
       kmf.init(keyStore, password);
       tmf.init(trustStore);
       context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
-      ServerSocketFactory ssf = context.getServerSocketFactory();
-      return ssf;
+      return context.getServerSocketFactory();
     } catch(Exception e) {
       e.printStackTrace();
     }

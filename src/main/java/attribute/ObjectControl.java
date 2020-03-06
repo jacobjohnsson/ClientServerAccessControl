@@ -7,13 +7,14 @@ import java.util.Scanner;
 import java.io.FileNotFoundException;
 import java.io.File;
 
-public class Object {
+public class ObjectControl extends AccessControl {
   private String id;
   private String name;
   private String[] subjects;
   private String[] divisions;
 
-  public Object (String id, String name, String[] subjects, String[] divisions) {
+  public ObjectControl(String id, String name, String[] subjects, String[] divisions) {
+    super();
     this.id = id;
     this.name = name;
     this.subjects = subjects;
@@ -34,22 +35,5 @@ public class Object {
       sb.append(", " + div);
     }
     return sb.toString();
-  }
-
-  public static List<Object> load(String file) throws FileNotFoundException {
-    Scanner scanner = new Scanner(new File(file));
-    List<Object> objects = new LinkedList<Object>();
-    while (scanner.hasNextLine()) {
-      String line = scanner.nextLine();
-      String[] attributes = line.split(", ");
-      String[] subjects = attributes[2].split(" : ");
-      String[] divisions = attributes[3].split(" : ");
-      Object o = new Object(attributes[0].trim(),
-                  attributes[1].trim(),
-                  subjects,
-                  divisions);
-      objects.add(o);
-    }
-    return objects;
   }
 }

@@ -1,6 +1,5 @@
 package communication;
 
-import java.net.*;
 import java.io.*;
 import javax.net.ssl.*;
 import java.security.cert.X509Certificate;
@@ -10,7 +9,6 @@ import java.math.BigInteger;
 public class MyClient {
   private String host;
   private int port;
-  private SSLSocket socket;
   private PrintWriter sender;
   private BufferedReader receiver;
 
@@ -38,41 +36,49 @@ public class MyClient {
     tmf.init(ts);
     context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
     SSLSocketFactory factory = context.getSocketFactory();
-
-    socket = (SSLSocket)factory.createSocket(host, port);
-    System.out.println("\nSocket before handshake: \n" + socket + "\n");
-
-    String subject = "";
+  
+    SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
+    //System.out.println("\nSocket before handshake: \n" + socket + "\n");
 
     socket.startHandshake();
 
     SSLSession session = socket.getSession();
     X509Certificate cert = (X509Certificate)session.getPeerCertificates()[0];
-    subject = cert.getSubjectDN().getName();
+    String subject = cert.getSubjectDN().getName();
     String issuer = cert.getIssuerDN().getName();
     BigInteger serialNum = cert.getSerialNumber();
-    System.out.println("certificate name (subject DN field) on certificate received from communication.server:\n" + subject + "\n");
-    // System.out.println("communication.server name (cert issuer DN field): " + issuer);
-    // System.out.println("communication.server, x509 certificate serial number: " + serialNum);
-    System.out.println("socket after handshake:\n" + socket + "\n");
-    System.out.println("secure connection established\n\n");
-    // System.out.println("Server is awaiting your message.");
+    //System.out.println("certificate name (subject DN field) on certificate received from communication.server:\n" + subject + "\n");
+    //System.out.println("communication.server name (cert issuer DN field): " + issuer);
+    //System.out.println("communication.server, x509 certificate serial number: " + serialNum);
+    //System.out.println("socket after handshake:\n" + socket + "\n");
+    //System.out.println("secure connection established\n\n");
 
     sender = new PrintWriter(socket.getOutputStream(), true);
     receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-    System.out.println(receiver.readLine());
+    //System.out.println(receiver.readLine());
   }
 
   public String send(String msg) {
     sender.println(msg);
+
     String result = "";
     try {
-      result = receiver.readLine();
+      result = readAll(receiver);
     } catch(Exception e) {
-      System.out.println("Unable to get response from server.");
+      return "Unable to get response from server.";
     }
+
     return result;
+  }
+  
+  private String readAll(BufferedReader reader) throws IOException {
+    StringBuilder sb = new StringBuilder();
+    sb.append(reader.readLine() + '\n');   // This is necessary to make the method blocking.
+    while (reader.ready()) {
+      sb.append(reader.readLine() + '\n');
+    }
+    return sb.toString();
   }
 
   private static char[] authenticateUser(KeyStore keyStore, KeyStore trustStore) {
@@ -88,7 +94,7 @@ public class MyClient {
         userAuthenticated = true;
       } catch(Exception e) {
         System.out.println("Invalid password, try again: ");
-        e.printStackTrace();
+
       }
     }
     return password;
@@ -98,5 +104,4 @@ public class MyClient {
     System.out.println("Enter keystore password: ");
     return System.console().readPassword();
   }
-
 }

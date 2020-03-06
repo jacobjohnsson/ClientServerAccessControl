@@ -28,5 +28,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+task(runClient, dependsOn: 'classes', type: JavaExec) {
+    main = 'main.ClientApp'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'localhost 9876'
+    systemProperty 'simple.message', 'Hello '
+}
+
 // Define the main class for the application
 mainClassName = 'main.ClientApp'
