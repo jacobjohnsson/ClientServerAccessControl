@@ -1,6 +1,7 @@
 package communication;
 
 import attribute.AccessControl;
+import attribute.ObjectControl;
 import attribute.Subject;
 import database.Database;
 
@@ -10,8 +11,11 @@ public class DeleteRequest extends Request {
   }
   
   @Override
-  public void execute(Database db) {
-    // TODO
-    System.out.println("Delete at database!");
+  public String execute(Database db) {
+    if (object.hasAccess(subject, ObjectControl.AccessRight.CREATE)) {
+      return "Delete journal: \n" + object;
+    } else {
+      return "No access.";
+    }
   }
 }

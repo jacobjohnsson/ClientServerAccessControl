@@ -1,6 +1,8 @@
 package communication;
 
 import attribute.AccessControl;
+
+import attribute.ObjectControl;
 import attribute.Subject;
 import database.Database;
 
@@ -10,8 +12,11 @@ public class CreateRequest extends Request {
   }
   
   @Override
-  public void execute(Database db) {
-    // TODO
-    System.out.println("Create new journal!");
+  public String execute(Database db) {
+    if (object.hasAccess(subject, ObjectControl.AccessRight.CREATE)) {
+      return "Create new journal!";
+    } else {
+      return "No access.";
+    }
   }
 }

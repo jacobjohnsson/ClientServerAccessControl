@@ -1,6 +1,7 @@
 package communication;
 
 import attribute.AccessControl;
+import attribute.ObjectControl;
 import attribute.Subject;
 import database.Database;
 
@@ -10,8 +11,12 @@ public class ReadRequest extends Request {
   }
   
   @Override
-  public void execute(Database db) {
-    // TODO
-    System.out.println("Read from database!");
+  public String execute(Database db) {
+    if (object.hasAccess(subject, ObjectControl.AccessRight.READ)) {
+      return db.read(object.getId());
+    } else {
+      return "No Access";
+    }
+    
   }
 }

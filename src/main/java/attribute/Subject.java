@@ -17,6 +17,18 @@ public abstract class Subject {
     this.division = division;
   }
   
+  public String getId() {
+    return id;
+  }
+  
+  public boolean isDoctor() {
+    return occupation.toLowerCase().equals("doctor");
+  }
+  
+  public boolean isGov() {
+    return occupation.toLowerCase().equals("gov");
+  }
+  
   @Override
   public String toString() {
     return "ID: " + id

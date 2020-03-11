@@ -6,9 +6,9 @@ import attribute.Subject;
 import database.Database;
 
 public abstract class Request {
-  private Subject subject;
-  private AccessControl object;
-  private String description;
+  protected Subject subject;
+  protected AccessControl object;
+  protected String description;
   
   public Request(Subject subject, AccessControl object, String description) {
     this.subject = subject;
@@ -16,7 +16,7 @@ public abstract class Request {
     this.description = description;
   }
   
-  public abstract void execute(Database db);
+  public abstract String execute(Database db);
   
   @Override
   public String toString() {
@@ -37,7 +37,8 @@ public abstract class Request {
   
   private static AccessControl parseObject(String[] content) {
     if (content.length > 1) {
-      return AccessControl.fetch(content[1].trim());
+      String objectID = content[1].trim();
+      return AccessControl.fetch(objectID);
     } else {
       return new NoAccessControl();
     }

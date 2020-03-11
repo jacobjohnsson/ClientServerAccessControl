@@ -18,10 +18,10 @@ import java.util.logging.Logger;
 public class MyServer implements Runnable {
   private static LocalTime time;
   private static Logger LOGGER = Logger.getLogger("Server");
-  private static ServerSocket serverSocket;
   private static String type = "TLS";
   private static AtomicInteger connections = new AtomicInteger(0);
   private static Database db;
+  private ServerSocket serverSocket;
 
   public MyServer (ServerSocket socket) {
     this.serverSocket = socket;
@@ -62,10 +62,10 @@ public class MyServer implements Runnable {
 
   public void run() {
     SSLSocket socket = acceptConnection();        // Blocking
-    
+    newListener();
     SSLSession session = socket.getSession();
     X509Certificate cert = verifyCertificateChain(session);
-    String clientID = cert.getSubjectDN().getName();
+    String clientID = extractClientID(cert);
     connections.getAndIncrement();
     printCert(cert);
     LOGGER.log( Level.INFO, "Connection accepted", time.now() );
@@ -75,10 +75,10 @@ public class MyServer implements Runnable {
       BufferedReader receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       String clientMsg = null;
 
-      //sender.println("Please enter name of patient.");
+
 
       while ((clientMsg = receiver.readLine()) != null) {
-        System.out.println("Received <" + clientMsg + ">");
+        System.out.println("Received <" + clientMsg + "> from <" + clientID + ">");
         Request request = Request.parseUserInput(clientMsg, clientID);
   
         System.out.println(request);
@@ -98,8 +98,12 @@ public class MyServer implements Runnable {
       System.out.println("Number of connections: " + nbr);
     }
   }
-
-
+  
+  private static String extractClientID(X509Certificate cert) {
+    String name = cert.getSubjectDN().getName();
+    return name.substring(name.indexOf('=') + 1, name.indexOf(','));
+  }
+  
   private X509Certificate verifyCertificateChain(SSLSession session) {
     X509Certificate cert = null;
     try {
@@ -124,7 +128,7 @@ public class MyServer implements Runnable {
   }
 
   private static void printCert(X509Certificate cert) {
-    String userID = cert.getSubjectDN().getName();
+    String userID = extractClientID(cert);
     String issuer = cert.getIssuerDN().getName();
     BigInteger serialNum = cert.getSerialNumber();
     System.out.println("communication.client connected");

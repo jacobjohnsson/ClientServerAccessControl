@@ -27,6 +27,7 @@ public class ClientApp {
 
   public static void main(String[] args) {
     ClientApp clientApp = new ClientApp(new MyClient("localhost", 9876));
+    System.out.println("Enter <command, patientID>");
     clientApp.communicate();
   }
 }

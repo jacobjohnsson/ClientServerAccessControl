@@ -1,2 +1,4 @@
 ka1234ka, Kalle Svensson, Doctor, Radiology
 ge1234an, George Andersson, Nurse, Radiology
+sv1234sv, Swedish government, Gov
+ja0020jo, Jacob Johnsson, Doctor, Radiology

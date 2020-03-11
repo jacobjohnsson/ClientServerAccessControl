@@ -5,6 +5,7 @@ public class ObjectControl extends AccessControl {
   private String name;
   private String[] subjects;
   private String[] divisions;
+  public enum AccessRight {NONE, READ, WRITE, CREATE, DELETE}
 
   public ObjectControl(String id, String name, String[] subjects, String[] divisions) {
     super();
@@ -12,6 +13,33 @@ public class ObjectControl extends AccessControl {
     this.name = name;
     this.subjects = subjects;
     this.divisions = divisions;
+  }
+  
+  public boolean hasAccess(Subject subject, AccessRight right) {
+    switch (right) {
+      case NONE:
+        return false;
+      case READ:
+        return subjectsContains(subject.getId());
+      case WRITE:
+        return subjectsContains(subject.getId()) && subject.isDoctor();
+      case DELETE:
+        return subject.isGov();
+    }
+    return false;
+  }
+  
+  public String getId() {
+    return id;
+  }
+  
+  private boolean subjectsContains(String subjectID) {
+    for (String s : subjects) {
+      if (s.equals(subjectID)) {
+        return true;
+      }
+    }
+    return false;
   }
   
   @Override

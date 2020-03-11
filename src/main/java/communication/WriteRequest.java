@@ -1,6 +1,7 @@
 package communication;
 
 import attribute.AccessControl;
+import attribute.ObjectControl;
 import attribute.Subject;
 import database.Database;
 
@@ -14,8 +15,11 @@ public class WriteRequest extends Request {
   }
   
   @Override
-  public void execute(Database db) {
-    // TODO
-    System.out.println("Write to database!");
+  public String execute(Database db) {
+    if (object.hasAccess(subject, ObjectControl.AccessRight.READ)) {
+      return "Write to database: " + content;
+    } else {
+      return "No Access";
+    }
   }
 }

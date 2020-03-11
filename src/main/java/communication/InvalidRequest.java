@@ -10,8 +10,8 @@ public class InvalidRequest extends Request {
   }
   
   @Override
-  public void execute(Database db) {
-    // remain empty
+  public String execute(Database db) {
+    return "Invalid request";
   }
 }
 

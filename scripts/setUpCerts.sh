@@ -3,7 +3,7 @@
 # Creates the public and private key pair for Certfification Autorithy, CA
 openssl req -x509 -newkey rsa:2048 -nodes -keyout ./certs/private_CA_key.pem -out ./certs/public_CA_key.pem -days 365 < ./input/createCA.in
 
-# Signs the root certificate, generates clienttruststore
+# Signs the root certificate, generates clienttruststore and servertruststore
 echo 'y' | keytool -import -file ./certs/public_CA_key.pem -alias CA -keystore ./certs/clienttruststore -storepass password
 
 # ---------- CLIENT  -----------

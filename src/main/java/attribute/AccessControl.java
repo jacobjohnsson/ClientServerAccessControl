@@ -6,6 +6,10 @@ import java.util.Scanner;
 
 public abstract class AccessControl {
   
+  public abstract boolean hasAccess(Subject subject, ObjectControl.AccessRight right);
+  
+  public abstract String getId();
+  
   public static AccessControl fetch(String objectID) {
     Scanner scanner = null;
     try {
@@ -14,6 +18,8 @@ public abstract class AccessControl {
       e.printStackTrace();
       return new NoAccessControl();
     }
+    
+    
     
     while (scanner.hasNextLine()) {
       String line = scanner.nextLine();

@@ -5,4 +5,8 @@
 build
 
 # Ignore java
-.class
+*.class
+
+# Ignore intermidiaet steps in certificate generation.
+*.pem
+*.srl
