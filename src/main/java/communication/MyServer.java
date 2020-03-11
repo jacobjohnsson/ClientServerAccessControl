@@ -75,12 +75,10 @@ public class MyServer implements Runnable {
       BufferedReader receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       String clientMsg = null;
 
-
-
       while ((clientMsg = receiver.readLine()) != null) {
         System.out.println("Received <" + clientMsg + "> from <" + clientID + ">");
         Request request = Request.parseUserInput(clientMsg, clientID);
-  
+
         System.out.println(request);
         request.execute(db);
         sender.println(request);
@@ -98,12 +96,12 @@ public class MyServer implements Runnable {
       System.out.println("Number of connections: " + nbr);
     }
   }
-  
+
   private static String extractClientID(X509Certificate cert) {
     String name = cert.getSubjectDN().getName();
     return name.substring(name.indexOf('=') + 1, name.indexOf(','));
   }
-  
+
   private X509Certificate verifyCertificateChain(SSLSession session) {
     X509Certificate cert = null;
     try {
@@ -148,8 +146,8 @@ public class MyServer implements Runnable {
       KeyStore trustStore = KeyStore.getInstance("JKS");
       char[] password = "password".toCharArray();
 
-      keyStore.load(new FileInputStream("./scripts/certs/serverkeystore"), password);
-      trustStore.load(new FileInputStream("./scripts/certs/servertruststore"), password);
+      keyStore.load(new FileInputStream("./scripts/certs/server/serverkeystore"), password);
+      trustStore.load(new FileInputStream("./scripts/certs/server/servertruststore"), password);
       kmf.init(keyStore, password);
       tmf.init(trustStore);
       context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);

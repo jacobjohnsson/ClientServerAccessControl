@@ -5,6 +5,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.KeyStore;
 import java.security.cert.X509Certificate;
+import java.util.Scanner;
 
 public class MyClient {
   private String host;
@@ -36,7 +37,7 @@ public class MyClient {
     tmf.init(ts);
     context.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
     SSLSocketFactory factory = context.getSocketFactory();
-  
+
     SSLSocket socket = (SSLSocket) factory.createSocket(host, port);
     //System.out.println("\nSocket before handshake: \n" + socket + "\n");
 
@@ -71,7 +72,7 @@ public class MyClient {
 
     return result;
   }
-  
+
   private String readAll(BufferedReader reader) throws IOException {
     StringBuilder sb = new StringBuilder();
     sb.append(reader.readLine() + '\n');   // This is necessary to make the method blocking.
@@ -84,17 +85,20 @@ public class MyClient {
   private static char[] authenticateUser(KeyStore keyStore, KeyStore trustStore) {
     boolean userAuthenticated = false;
     char[] password = null;
+    Scanner scanner = new Scanner(System.in);
+    System.out.println("Enter user name: ");
+    String userName = scanner.nextLine();
     while (!userAuthenticated) {
 
       password = readPassword();
 
+      // TODO Refactor because using exception for program flow is bad.
       try {
-        keyStore.load(new FileInputStream("./scripts/certs/clientkeystore"), password);
-        trustStore.load(new FileInputStream("./scripts/certs/clienttruststore"), password);
+        keyStore.load(new FileInputStream("./scripts/certs/client/" + userName + "keystore"), password);
+        trustStore.load(new FileInputStream("./scripts/certs/client/" + userName + "truststore"), password);
         userAuthenticated = true;
       } catch(Exception e) {
         System.out.println("Invalid password, try again: ");
-
       }
     }
     return password;
